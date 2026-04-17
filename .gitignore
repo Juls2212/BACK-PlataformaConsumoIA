@@ -1,3 +1,9 @@
 /target/
 /data/
+/.m2/
 *.log
+*.mv.db
+*.trace.db
+.idea/
+.vscode/
+*.class

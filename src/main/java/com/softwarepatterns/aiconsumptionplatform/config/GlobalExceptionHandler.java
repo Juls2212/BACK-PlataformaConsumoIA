@@ -1,6 +1,7 @@
 package com.softwarepatterns.aiconsumptionplatform.config;
 
-import com.softwarepatterns.aiconsumptionplatform.exception.QuotaExceededException;
+import com.softwarepatterns.aiconsumptionplatform.exception.InvalidPlanUpgradeException;
+import com.softwarepatterns.aiconsumptionplatform.exception.MonthlyQuotaExceededException;
 import com.softwarepatterns.aiconsumptionplatform.exception.RateLimitExceededException;
 import com.softwarepatterns.aiconsumptionplatform.exception.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -29,9 +30,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(buildBody(HttpStatus.TOO_MANY_REQUESTS, exception.getMessage()), headers, HttpStatus.TOO_MANY_REQUESTS);
     }
 
-    @ExceptionHandler(QuotaExceededException.class)
-    public ResponseEntity<Map<String, Object>> handleQuotaExceeded(QuotaExceededException exception) {
+    @ExceptionHandler(MonthlyQuotaExceededException.class)
+    public ResponseEntity<Map<String, Object>> handleQuotaExceeded(MonthlyQuotaExceededException exception) {
         return buildResponse(HttpStatus.PAYMENT_REQUIRED, exception.getMessage(), null);
+    }
+
+    @ExceptionHandler(InvalidPlanUpgradeException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidPlanUpgrade(InvalidPlanUpgradeException exception) {
+        return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), null);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

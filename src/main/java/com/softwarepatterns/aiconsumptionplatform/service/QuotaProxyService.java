@@ -2,7 +2,7 @@ package com.softwarepatterns.aiconsumptionplatform.service;
 
 import com.softwarepatterns.aiconsumptionplatform.dto.GenerationRequest;
 import com.softwarepatterns.aiconsumptionplatform.dto.GenerationResponse;
-import com.softwarepatterns.aiconsumptionplatform.exception.QuotaExceededException;
+import com.softwarepatterns.aiconsumptionplatform.exception.MonthlyQuotaExceededException;
 import com.softwarepatterns.aiconsumptionplatform.exception.ResourceNotFoundException;
 import com.softwarepatterns.aiconsumptionplatform.model.PlanType;
 import com.softwarepatterns.aiconsumptionplatform.model.QuotaUsage;
@@ -57,7 +57,7 @@ public class QuotaProxyService implements AIGenerationService {
         PlanType currentPlan = user.getCurrentPlan();
         long estimatedTokens = tokenEstimator.estimateTokens(request.getPrompt());
         if (!currentPlan.isUnlimited() && quotaUsage.getTokensUsed() + estimatedTokens > currentPlan.getMonthlyTokenLimit()) {
-            throw new QuotaExceededException("Monthly token quota exceeded for user id: " + user.getId());
+            throw new MonthlyQuotaExceededException("Monthly token quota exceeded for user id: " + user.getId());
         }
 
         GenerationResponse response = delegate.generate(request);
